@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>登陆</title>
+        <link rel="stylesheet" href="../css/reset.css">
+        <link rel="stylesheet" href="../css/common.css">
+    </head>
+    <style media="screen">
+        body, html, #app {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+        }
+        .app {
+            position: absolute;
+            /*height:1000px;*/
+            background: url(../image/public/not_found.jpg) no-repeat;
+            background-size:100% 100%;
+        }
+        .tips {
+            margin-top: 60vh;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+        }
+        .btn {
+            width: 4rem;
+            height: 1.5rem;
+            margin: 0 auto;
+            margin-top: 1rem;
+            border-radius: 1.25rem;
+            line-height: 1.5rem;
+            text-align: center;
+            color: #000;
+            background-color: #fff;
+        }
+    </style>
+    <body>
+        <div class="app" id="app" :style="{ height: bodyHeight + 'px' }">
+            <p class="tips">放大找也找不到！</p>
+            <div class="btn" @click="close">返回</div>
+        </div>
+    </body>
+    <script src="../script/api.js" charset="utf-8"></script>
+    <script src="../script/vue.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+          var vm;
+          apiready = function() {
+              vm = new Vue({
+                  el: '#app',
+                  data: {
+                      bodyHeight: ''
+                  },
+                  created: function () {
+                  },
+                  mounted: function () {
+                      this.bodyHeight = document.documentElement.clientHeight
+                  },
+                  methods: {
+                        close: function () {
+                            api.closeWin();
+                        }
+                  }
+              });
+          }
+    </script>
+</html>

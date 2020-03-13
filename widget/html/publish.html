@@ -2,49 +2,75 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>动态</title>
+        <title>动态-心情广场</title>
     </head>
     <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/common.css">
     <style>
-        .nav-list {
-            display: flex;
+        body, html, #app {
+            background-color: #fff;
+        }
+        .header {
             padding: .75rem;
         }
-        .nav-list .nav-item {
-            margin-right: .75rem;
-            line-height: 1.5rem;
+        .search-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .nav-active {
-            font-size: 1.5rem;
-            font-weight: 900;
+        .search-bar .search-inp {
+            flex-grow: 1;
+            height: 1.5rem;
+            border: none;
+            border-radius: .25rem;
+            padding: .3rem .3rem .3rem 1rem;
+            background-color: #ddd;
         }
-        .nav-arrow {
-            /*width: 0;
-            height: 0;
-            border: 40px solid;
-            border-color: transparent transparent red;*/
-            position: relative;
-            top: 0;
-            left: 3rem;
-            width: 1rem;
-            height: 1rem;
+        .search-bar .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-left: 1rem;
         }
-        .nav-arrow img {
+        ::-webkit-input-placeholder {
+              color: #999;
+              font-size: .8rem;
+              background-color: none;
+        }
+        .search-bar .icon img {
             width: 100%;
             height: 100%;
         }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;;
+            margin-top: 1.5rem;
+        }
+        .nav .nav-item {
+            height: 2rem;
+        }
+        .nav-active {
+            font-size: 1.2rem;
+            border-bottom: 2px solid #e74a45;
+        }
     </style>
     <body>
-        <div id="app" class="app">
-            <div id="nav" class="nav">
-                <div class="nav-list">
-                    <div class="nav-item" :class="{'nav-active': navActive === 0}" @click="onNavItemClick(0)">热门推荐</div>
-                    <div class="nav-item" :class="{'nav-active': navActive === 1}" @click="onNavItemClick(1)">关注的人</div>
-                    <div class="nav-item" :class="{'nav-active': navActive === 2}" @click="onNavItemClick(2)">心情广场</div>
+        <div class="app" id="app">
+            <div id="header" class="header">
+                <div class="search-bar">
+                    <input type="text" class="search-inp" placeholder="搜索文章/用户/主题贴">
+                    <div class="icon">
+                        <img src="../image/public/add.png" alt="">
+                    </div>
                 </div>
-                <div id="nav-arrow" class="nav-arrow">
-                    <img src="../image/public/up_arrorw.png" alt="">
-                </div>
+                <ul class="nav">
+                    <li class="nav-item" :class="{'nav-active': navActive === 0}" @click="onNavItemClick(0)">推荐</li>
+                    <li class="nav-item" :class="{'nav-active': navActive === 1}" @click="onNavItemClick(1)">好文</li>
+                    <li class="nav-item" :class="{'nav-active': navActive === 2}" @click="onNavItemClick(2)">前端</li>
+                    <li class="nav-item" :class="{'nav-active': navActive === 3}" @click="onNavItemClick(3)">JAVA</li>
+                    <li class="nav-item" :class="{'nav-active': navActive === 4}" @click="onNavItemClick(4)">Python</li>
+                    <li class="nav-item" :class="{'nav-active': navActive === 5}" @click="onNavItemClick(5)">护发秘籍</li>
+                </ul>
             </div>
         </div>
     </body>
@@ -55,14 +81,7 @@
         var vm;
         apiready = function () {
             api.addEventListener({
-                name:'launchviewclicked'
-            },function(ret,err){
-                api.alert({
-                    msg:ret.value
-                });
-            });
-            api.addEventListener({
-                name: 'initPost'
+                name: 'initPublish'
             }, function(ret, err){
                 if (err) {
                     return;
@@ -70,21 +89,12 @@
                 vm.initFrameGroup();
             });
             api.addEventListener({
-                name: 'interMove'
-            }, function(ret, err){
-                if( ret ){
-                     $api.byId('nav-arrow').style.left = vm.nav_arr_start_x - ret.value.len + 'px';
-                }else{
-                     alert( JSON.stringify( err ) );
-                }
-            });
-            api.addEventListener({
-                name: 'frameItemSwipe'
+                name: 'publishFrameItemSwipe'
             }, function(ret, err){
                 if( ret ){
                      vm.navActive = ret.value.index;
                      api.setFrameGroupIndex({
-                        name: 'post_group',
+                        name: 'publish_group',
                         index: ret.value.index
                     });
                 }else{
@@ -115,21 +125,6 @@
                         shadow: '#000'
                     });
                 }
-                if (ret.index !== 1) {
-                    api.closeFrameGroup({
-                        name: 'post_group'
-                    });
-                    api.setTabBarAttr({
-                        index: ret.index
-                    });
-                }
-                if (ret.index === 1) {
-                    api.setTabBarAttr({
-                        index: 1
-                    });
-                    vm.initFrameGroup();
-                    return;
-                }
                 if (ret.index !== 2) {
                     api.closeFrameGroup({
                         name: 'publish_group'
@@ -142,8 +137,19 @@
                     api.setTabBarAttr({
                         index: 2
                     });
+                    vm.initFrameGroup();
+                }
+                if (ret.index !== 1) {
+                    api.closeFrameGroup({
+                        name: 'post_group'
+                    });
+                    api.setTabBarAttr({
+                        index: ret.index
+                    });
+                }
+                if (ret.index === 1) {
                     api.sendEvent({
-                        name: 'initPublish',
+                        name: 'initPost',
                         extra: {
                         }
                     });
@@ -151,24 +157,23 @@
                 api.setTabBarAttr({
                     index: ret.index
                 });
+                $j.log(JSON.stringify(ret));
             });
             vm = new Vue({
                 el: '#app',
                 data: {
-                    navActive: 0,
-                    nav_arr_start_x: 0
+                    navActive: 0
                 },
                 created: function () {
                     this.$nextTick(function () {
-                        this.nav_arr_start_x = $api.byId('nav-arrow').offsetLeft;
                         this.initFrameGroup();
                     });
                 },
                 methods: {
                     initFrameGroup: function () {
-                        var headerHeigt = $api.byId('nav').offsetHeight;
+                        var headerHeigt = $api.byId('header').offsetHeight;
                         api.openFrameGroup({
-                            name: 'post_group',
+                            name: 'publish_group',
                             fixedOn: 'ui_window',
                             scrollEnabled: false,
                             preload: 0,
@@ -180,16 +185,14 @@
                             },
                             frames: [{
                                 name: 'recommend',
-                                url: './post/recommend.html',
-                                bgColor: '#fff'
-                            }, {
-                                name: 'attention',
-                                url: './post/attention.html',
-                                bgColor: '#fff'
+                                url: './publish/recommend.html',
+                                bgColor: '#fff',
+                                bounces: true
                             },{
-                                name: 'square',
-                                url: './post/square.html',
-                                bgColor: '#fff'
+                                name: 'good_articel',
+                                url: './publish/good_articel.html',
+                                bgColor: '#fff',
+                                bounces: true
                             }]
                         }, function(ret, err) {
                             var index = ret.index;
@@ -198,12 +201,13 @@
                     onNavItemClick: function (index) {
                         this.navActive = index;
                         api.setFrameGroupIndex({
-                            name: 'post_group',
+                            name: 'publish_group',
                             index: index
                         });
                     }
                 }
             });
+
         }
     </script>
-</html>
+    </html>
