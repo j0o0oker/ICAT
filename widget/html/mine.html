@@ -3,9 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>个人中心</title>
 </head>
 <body>
-    <h1>喵喵</h1>
+    <div id="app">
+        <h1>喵喵</h1>
+        <button @click="onBtnClick">click</button>
+    </div>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/vue.min.js"></script>
+<script>
+    var vm;
+    apiready = function(){
+        
+        vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            created: function () {
+
+            }, 
+            methods: {
+                onBtnClick: function () {
+                    $j.ajax('first_dem/demo', {name: 'joker', pass: '123456'}, function (data, issucc) {
+                        $j.log("<-------------------------------------------cut---line--------------------------------------->")
+                        $j.log(data);
+                        $j.log('[{"name":"唐老鸭","sex":"男"},{"name":"红太狼","sex":"女"}]');
+                    });
+                }
+            }
+        })
+    }
+        
+</script>
 </body>
 </html>

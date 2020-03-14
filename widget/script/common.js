@@ -1,230 +1,43 @@
-
-(function(window){
-	// Vue.directive('focus', {
-	// 	inserted: function(el, binding) {
-	// 		el.focus();
-	// 	}
-	// });
-    /*------------------------------------公共方法----------------------------------------*/
+// 常量配置
+var SERVER_HOST = 'http://192.168.0.101';
+var SERVER_PORT = '8080';
 
 
-    /**
-     * toast提示
-     *
-     * @param {string} msg 提示语
-     */
-	var c = {};
-    c.toast = function(msg) {
-        if (typeof api === 'undefined') {
-            console.warn(msg);
-            return;
-        }
-        if(!msg){
-            return;
-        }
+var j = {};
 
-        api.toast({
-            msg: msg,
-            duration: 3000,
-            location: 'bottom'
-        });
-	};
-	/**
-     * alert提示
-     *
-     * @param {string} msg 提示语
-     */
-    c.alert = function(msg) {
-        if (typeof api === 'undefined') {
-            console.warn(msg);
-            return;
-        }
-        if(!msg){
-            return;
-        }
-
-        api.alert({
-			msg: msg,
-		});
-	};
-	
-	c.isObject = function(obj){
-		return typeof obj === 'object' && obj.constructor === {}.constructor;
-	};
-
-    c.isFunction = function( obj ) {
-        // Support: Chrome <=57, Firefox <=52
-        // In some browsers, typeof returns "function" for HTML <object> elements
-        // (i.e., `typeof document.createElement( "object" ) === "function"`).
-        // We don't want to classify *any* DOM node as a function.
-        return typeof obj === "function" && typeof obj.nodeType !== "number";
-	};
-	
-	c.openWin = function(url,param,title,name) {//打开全屏窗口
-		var getWinName = function(url){
-			if(!url){
-				return;
-			}
-			var winname = url;
-			var idx = winname.lastIndexOf('.');
-			if(idx > 0){
-				winname = winname.substring(0,idx);
-			}
-			var slash = url.lastIndexOf('/');
-			if(slash >= 0){
-				winname = winname.substring(slash+1);
-			}
-			return winname;
-		};
-
-		var len = arguments.length;
-		if(len <= 0 || !url){
-			return;
+// ui组件
+j.log = function (content) {
+	if (typeof content === 'object' || typeof content === Object) {
+        console.log(JSON.stringify(content));
+        return;
+    }
+    if (typeof content === Array || typeof content === 'array') {
+        console.log(JSON.stringify(content));
+        return;
+    }
+    console.log(content);
+}
+// ajax
+ j.ajax = function (host, dt, callback) {
+	// http://localhost:8080/first_dem/demo
+	api.ajax({
+		url: SERVER_HOST + ":" + SERVER_PORT + "/" + host,
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+		},
+		dataType: 'text',
+		data: {
+			body: dt
 		}
-		if($c.isObject(param)){
-			if(title){
-				param.toptitle = title;
-			}
-			api.openWin({
-				name: name || getWinName(url),
-				url: url,
-				bgColor: '#fff',
-				allowEdit:true,
-				bounces: false,
-				rect: {
-					x: 0,
-					y: 0,
-				},
-				pageParam: param
-			});
+	}, function(ret, err) {
+		if (ret) {
+			callback(ret, err)
+			// api.alert({ msg: JSON.stringify(ret) });
+		} else {
+			callback(ret, err)
+			// api.alert({ msg: JSON.stringify(err) });
 		}
-		else{
-			api.openWin({
-				name: name || getWinName(url),
-				url: url,
-				bgColor: '#fff',
-				bounces: false,
-				rect: {
-					x: 0,
-					y: 0,
-				}
-			});
-		}
-	};
-
-	c.openWinNav = function(url,param,title,name) {//打开导航条窗口
-		var getWinName = function(url){
-			if(!url){
-				return;
-			}
-			var winname = url;
-			var idx = winname.lastIndexOf('.');
-			if(idx > 0){
-				winname = winname.substring(0,idx);
-			}
-			var slash = url.lastIndexOf('/');
-			if(slash >= 0){
-				winname = winname.substring(slash+1);
-			}
-			return winname;
-		};
-
-		var len = arguments.length;
-		if(len <= 0 || !url){
-			return;
-		}
-		var httpReg = /^(http|https):\/\/.+/i;
-
-		if(httpReg.test(url)){
-			title = arguments[1];
-			api.openWin({
-				name: 'outerlink',
-				url: '../html/common/outerlink.html',
-				title: title,
-				bgColor: '#fff',
-				bounces: false,
-				rect: {
-					x: 0,
-					y: 0,
-				},
-				pageParam: {
-					url: url,
-					title: title
-				}
-			});
-		}
-		else{
-			if(typeof arguments[1] == "string" ){
-				api.openTabLayout({
-					name: arguments[2] || getWinName(url),
-					url: url,
-					title: arguments[1],
-					hideNavigationBar: false,
-					bgColor: '#fff',
-					allowEdit: true,
-					navigationBar: {//默认值 tabBar 是54  , navigationBar是45
-						background: '#fff',
-						shadow: '#eee',
-						color: '#000',
-						// hideBackButton:false,
-						leftButtons: [{
-							// text:''
-							iconPath: 'widget://image/common/back_nav2.png'
-						}]
-					}
-				});
-			}
-			else{
-				if(param.rightIcon){
-					api.openTabLayout({
-						name: name || getWinName(url),
-						url: url,
-						title: title,
-						hideNavigationBar: false,
-						bgColor: '#fff',
-						allowEdit: true,
-						navigationBar: {//默认值 tabBar 是54  , navigationBar是45
-							background: '#fff',
-							shadow: '#eee',
-							color: '#000',
-							// hideBackButton:false,
-							leftButtons: [{
-								// text:''
-								iconPath: 'widget://image/common/back_nav2.png'
-							}],
-							rightButtons:[{
-								iconPath: 'widget://'+param.rightIcon
-							}]
-						},
-						pageParam: param
-					});
-				}
-				else{
-					api.openTabLayout({
-						name: name || getWinName(url),
-						url: url,
-						title: title,
-						hideNavigationBar: false,
-						bgColor: '#fff',
-						allowEdit: true,
-						navigationBar: {//默认值 tabBar 是54  , navigationBar是45
-							background: '#fff',
-							shadow: '#eee',
-							color: '#000',
-							// hideBackButton:false,
-							leftButtons: [{
-								// text:''
-								iconPath: 'widget://image/common/back_nav2.png'
-							}]
-						},
-						pageParam: param
-					});
-				}
-			}
-		}
-	};
-
-    window.$c = c;
-})(window);
-
-
+	});
+ }
+var $j = j;
