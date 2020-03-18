@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫咪图鉴</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+       
+        /* 搜索框 */
+        .search-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            height: 3rem;
+            padding: .75rem .75rem .75rem .75rem;
+            color: #fff;
+            background-color: #ccef7b;
+        }
+        .search-bar .search-inp {
+            width: 16rem;
+            height: 1.3rem;
+            padding: .2rem;
+            border: none;
+            /* border: 1px solid #000; */
+            border-radius: .25rem;
+            background-color: #fff;
+        }
+        .main-content {
+            padding: .75rem;
+
+        }
+        .nav-list {
+            display: flex;
+            justify-content: flex-start;
+            align-items: baseline;
+            /* height: 4rem; */
+            /* border-bottom: 1px solid #ccc; */
+        }
+        .nav-list .nav-item {
+            flex: 0 0 5rem;
+            padding: .5rem;
+            height: 3rem;
+            /* text-align: center; */
+            color: rgb(134, 132, 132);
+        }
+        .nav-active {
+            font-size: 1.5rem;
+            color: #000!important;
+            font-weight: 700;
+            border-bottom: 3px solid #ccef7b;
+        }
+        .nav-list .nav-item .name {
+            
+        }
+        .pic_list {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .pic_list .pic_item {
+            position: absolute;
+            width: 48.5%;
+            flex: 0 0 48.5%;
+            margin-top: .75rem;
+            border-radius: .5rem;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+        .pic_list .pic_item .name {
+            padding: .5rem .5rem 0 .5rem;
+            font-size: .8rem;
+
+        }
+        .pic_list .pic_item .desc {
+            padding: .5rem;
+            color: rgb(139, 138, 138);
+            font-size: .7rem;
+
+        }
+        .img-wrap {
+            /* width: 2rem; */
+            /* border-top-left-radius: .5rem;
+            border-top-right-radius: .5rem; */
+            /* overflow: hidden; */
+        }
+        .img-wrap img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="header"></div>
+        <div class="search-bar">
+            <span>LOGO</span>
+            <input type="text" class="search-inp" placeholder="请输入搜索内容">
+            <span>搜索</span>
+        </div>
+        <div class="main-content">
+            <section class="nav">
+                <div class="nav-list">
+                    <div class="nav-item" :class="{'nav-active': index == cur_index}" v-for="(item, index) in column" :key="index" @click="onNavClick(index)">
+                        <span class="name">{{item.name}}</span>
+                        <!-- <div class="sub-item-list" v-for="(sub_item, sub_index) in item.sub_column" :key="sub_index" v-if="index == cur_index">
+                            <span class="sub-name">{{sub_item.name}}</span>
+                        </div> -->
+                    </div>
+                </div>
+            </section>
+            <section class="pic">
+                <div class="pic_list" id="pic_list">
+                    <div class="pic_item">
+                        <div class="img-wrap">
+                            <img src="../image/picShow/0.jpg" alt="">
+                        </div>
+                        <div class="name">包子</div>
+                        <div class="desc">我的眼里全是你</div>
+                    </div>
+                    <div class="pic_item">
+                        <div class="img-wrap">
+                            <img src="../image/picShow/1.jpg" alt="">
+                        </div>
+                        <div class="name">测试姓名</div>
+                        <div class="desc">就这样看着你看着你目不转睛</div>
+                    </div>
+                    <div class="pic_item">
+                        <div class="img-wrap">
+                            <img src="../image/picShow/2.jpg" alt="">
+                        </div>
+                        <div class="name">测试姓名</div>
+                        <div class="desc">喵喵喵</div>
+                    </div>
+                    <div class="pic_item">
+                        <div class="img-wrap">
+                            <img src="../image/picShow/0.jpg" @load="onImgLoad()" alt="">
+                        </div>
+                        <div class="name">包子</div>
+                        <div class="desc">就这样看着你看着你目不转睛</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+       
+    </div>
+<script src="../script/api.js"></script>
+<script src="../script/common.js"></script>
+<script src="../script/vue.min.js"></script>
+<script>
+    var vm;
+    apiready = function(){
+        var header = $api.byId('header');
+        header.style.paddingTop = api.safeArea.top-1 + 'px';
+        api.setStatusBarStyle({
+            style: 'light',
+            color: '#ccef7b'
+        });
+        vm = new Vue({
+            el: '#app',
+            data: {
+                cur_index: '0',
+                column: [
+                    {
+                        name: '全部',
+                        limit_code: '0',
+                        sub_column: [
+                            
+                        ]
+                    },
+                    {
+                        name: '按毛长',
+                        limit_code: '1',
+                        sub_column: [
+                            {
+                                name: '长毛',
+                                limit_code: '0',
+                            },
+                            {
+                                name: '短毛',
+                                limit_code: '1',
+                            }
+                        ]
+                    },
+                    {
+                        name: '按品种',
+                        limit_code: '2',
+                        sub_column: [
+                            {
+                                name: '纯种',
+                                limit_code: '0',
+                            },
+                            {
+                                name: '杂种',
+                                limit_code: '1',
+                            }
+                        ]
+                    },
+                    {
+                        name: '按环境',
+                        limit_code: '3',
+                        sub_column: [
+                            {
+                                name: '家猫',
+                                limit_code: '0',
+                            },
+                            {
+                                name: '野猫',
+                                limit_code: '1',
+                            }
+                        ]
+                    }
+                ]
+            },
+            created: function () {
+
+            }, 
+            methods: {
+                onNavClick: function (index) {
+                    this.cur_index = index;
+                },
+                onImgLoad: function () {
+                    this.waterFall();
+                },
+                waterFall: function () {
+					var box = document.getElementById('pic_list');
+					var items = box.children;
+					var gap = 10;
+					var pageWidth = api.winWidth;
+					var itemWidth = items[0].offsetWidth;
+					var columns = parseInt(pageWidth / (itemWidth + gap));
+					var arr = [];
+					for (var i = 0; i < items.length; i++) {
+						if (i < columns) {
+							items[i].style.top = 0;
+							items[i].style.left = (itemWidth + gap) * i + 'px';
+							arr.push(items[i].offsetHeight);
+						} else {
+							var minHeight = arr[0];
+							var index = 0;
+							for (var j = 0; j < arr.length; j++) {
+								if (minHeight > arr[j] ||minHeight == arr[j] ) {
+									minHeight = arr[j];
+									index = j;
+								}
+							}
+							items[i].style.top = arr[index] + gap + 'px';
+							items[i].style.left = items[index].offsetLeft + 'px';
+							arr[index] = arr[index] + items[i].offsetHeight + gap;
+						}
+					}
+				}
+            }
+        })
+    }
+        
+</script>
+</body>
+</html>
