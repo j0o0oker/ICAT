@@ -1,42 +1,320 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人中心</title>
-</head>
-<body>
-    <div id="app">
-        <h1>喵喵</h1>
-        <button @click="onBtnClick">click</button>
-    </div>
-<script src="../script/api.js"></script>
-<script src="../script/common.js"></script>
-<script src="../script/vue.min.js"></script>
-<script>
-    var vm;
-    apiready = function(){
-        
-        vm = new Vue({
-            el: '#app',
-            data: {
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>个人中心</title>
+    </head>
+    <link rel="stylesheet" href="../css/common.css">
+    <style media="screen">
+        body, html, #app {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0
+        }
+        .app {
+            /*padding: 0 .75rem;*/
+        }
+        .header {
+        }
+        .header .header-bg {
+            display: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 11rem;
+            background-color: #ccef7b;
+        }
+        .header .user-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .header .user-info .username {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 1.5rem 0;
+            font-size: 0.8rem;
+            color: #fff;
+        }
+        .header .user-info .avator {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1.5rem;
+            z-index: 7;
+        }
+        .header .user-info .avator .avator-wrap {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            box-shadow: 2px 0 10px #ccef7b;
+            overflow: hidden;
+        }
+        .header .user-info .avator .avator-wrap img {
+            width: 4rem;
+            height: 4rem;
+        }
+        .header .user-info .info-bar {
+            display: flex;
+            justify-content: space-around;;
+            align-items: center;
+            width: 80%;
+            height: 6rem;
+            margin-top: -2rem;
+            border-radius: .25rem;
+            box-shadow: 0 5px 5px #ccef7b, 1px 0 5px #ccef7b, -1px 0 5px #ccef7b;
+            font-size: .6rem;
+            background-color: #fff;
+        }
+        .header .user-info .info-bar .info-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;;;
+            align-items: center;
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .header .user-info .info-bar .info-item img {
+            width: 100%;
+            height: 100%;
+            margin-bottom: .5rem;
+        }
+        .do-list {
+            margin-top: 4rem;
+            padding: 0 .75rem;
+            font-size: 1rem;
+            color: #000;
+        }
+        .do-list .do-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 2.5rem;
+            padding: .75rem 0;
+            /*border-bottom: 1px solid #ddd;*/
+        }
+        .do-list .do-item img {
+            width: 100%;
+            height: 100%;
+        }
+        .do-list .do-item .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .do-list .do-item .arrow {
+            width: 1rem;
+            height: 1rem;
+        }
+        .do-list .do-item .title-wrap {
+            display: flex;
+            align-items: center;
+        }
+        .do-list .do-item .title-wrap .title {
+            margin-left: 1rem;
+        }
+        .logout-btn {
+            width: 25rem;
+            height: 2.5rem;
+            margin: 2rem auto;
+            border-radius: .25rem;
+            text-align: center;
+            line-height: 2.5rem;
+            color: #fff;
+            font-size: 1rem;
+            background-color: #e74a45;
+        }
+    </style>
+    <body>
+        <div class="app" id="app">
+            <div class="header">
+                <div class="header-bg"></div>
+                <div class="user-info">
+                    <div class="username" @click="$j.openWin('./mine/login.html');">去登陆</div>
+                    <div class="avator">
+                        <div class="avator-wrap">
+                            <img src="../image/main/main.png" alt="">
+                        </div>
+                    </div>
+                    <ul class="info-bar">
+                        <li class="info-item">
+                            <img src="../image/mine/friends.png" alt="">
+                            <span>6</span>
+                        </li>
+                        <li class="info-item">
+                            <img src="../image/mine/fans.png" alt="">
+                            <span>66</span>
+                        </li>
+                        <li class="info-item">
+                            <img src="../image/mine/attention.png" alt="">
+                            <span>66</span>
+                        </li>
+                        <li class="info-item">
+                            <img src="../image/mine/articles.png" alt="">
+                            <span>6</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <ul class="do-list">
+                <li class="do-item" v-for="(item, index) in do_list_data" :key="index">
+                    <div class="title-wrap">
+                        <div class="icon">
+                            <img :src="item.img_url" alt="">
+                        </div>
+                        <span class="title">{{item.title}}</span>
+                    </div>
+                    <div class="arrow">
+                        <img src="../image/public/black_arrow_back.png" alt="">
+                    </div>
+                </li>
+            </ul>
+            <div class="footer">
+                <div class="logout-btn" @click="test">
+                    退出登陆
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../script/api.js" charset="utf-8"></script>
+    <script src="../script/vue.min.js" charset="utf-8"></script>
+    <script src="../script/common.js" charset="utf-8"></script>
+    <script type="text/javascript">
+          var vm;
+          apiready = function() {
+              api.addEventListener({
+                    name: 'keyback'
+                }, function(ret, err) {
 
-            },
-            created: function () {
-
-            }, 
-            methods: {
-                onBtnClick: function () {
-                    $j.ajax('first_dem/demo', {name: 'joker', pass: '123456'}, function (data, issucc) {
-                        $j.log("<-------------------------------------------cut---line--------------------------------------->")
-                        $j.log(data);
-                        $j.log('[{"name":"唐老鸭","sex":"男"},{"name":"红太狼","sex":"女"}]');
+                    var is_first_click = api.getGlobalData({
+                        key: 'is_first_click'
                     });
-                }
-            }
-        })
-    }
-        
-</script>
-</body>
+                    if (!is_first_click) {
+                        var first_click_date = new Date();
+                        var first_click_time = first_click_date.getTime();
+                        api.setGlobalData({
+                            key: 'first_click_time',
+                            value: first_click_time
+                        });
+                        api.setGlobalData({
+                            key: 'is_first_click',
+                            value: true
+                        });
+                        $j.toast('再按一次退出app');
+                        return;
+                    }
+                    var first_click_time = api.getGlobalData({
+                        key: 'first_click_time'
+                    });
+                    var second_click_date = new Date();
+                    var second_click_time = second_click_date.getTime();
+                    if ((second_click_time - first_click_time) < 2000) {
+                        api.setGlobalData({
+                            key: 'first_click_time',
+                            value: 0
+                        });
+                        api.setGlobalData({
+                            key: 'is_first_click',
+                            value: false
+                        });
+                        api.closeWidget({
+                          silent : true
+                        });
+                    }
+                });
+              vm = new Vue({
+                  el: '#app',
+                  data: {
+                      do_list_data: [
+                          {
+                              title: '趣闻',
+                              img_url: '../image/mine/wz.png'
+                          },
+                          {
+                              title: '动态',
+                              img_url: '../image/mine/tz.png'
+                          },
+                          {
+                              title: '收藏',
+                              img_url: '../image/mine/sc.png'
+                          },
+                          {
+                              title: '草稿箱',
+                              img_url: '../image/mine/cgx.png'
+                          },
+                          {
+                              title: '勋章墙',
+                              img_url: '../image/mine/xzq.png'
+                          },
+                          {
+                              title: '反馈中心',
+                              img_url: '../image/mine/yhfk.png'
+                          },
+                          {
+                              title: '联系我们',
+                              img_url: '../image/mine/call.png'
+                          },
+                          {
+                              title: '设置',
+                              img_url: '../image/mine/sz.png'
+                          }
+                      ]
+                  },
+                  created: function () {
+                    //   this.initView();
+                      this.addbadge();
+                  },
+                  methods: {
+                      addbadge: function () {
+                          api.setTabBarItemAttr({
+                                index: 1,
+                                badge: {
+                                    text: '1',
+                                    background: '#ff0000',
+                                    color: '#fff',
+                                    radius: 8,
+                                    x: 5,
+                                    y: 5
+                                }
+                            });
+                      },
+                      onLoginClick: function () {
+                        api.openWin({
+                            name: 'login',
+                            url: './mine/login.html',
+                        });
+                    },
+                    test: function () {
+                        // api.startLocation({
+                        //     accuracy: '10m',
+                        //     filter: 0.1,
+                        //     autoStop: true
+                        // }, function(ret, err){
+                        //     if(ret && ret.status){
+                        //          //获取位置信息成功
+                        //          setInterval(function () {
+                        //              $j.log(ret);
+                        //          }, 1000);
+                        //     }else{
+                        //          alert(JSON.stringify(err));
+                        //     }
+                        // });
+                        return;
+                        api.call({
+                            type: 'tel_prompt',
+                            number: '10086'
+                        });
+                    }
+                  }
+              });
+          }
+    </script>
 </html>

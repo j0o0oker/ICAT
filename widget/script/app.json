@@ -9,8 +9,8 @@
         "background": "widget://image/main/tabbar_bg.png",
         "animated": false,
         "scrollEnabled":false,
-        "index":2,
-        "selectedColor":"#ffffff", 
+        "index":4,
+        "selectedColor":"#ffffff",
         "fontSize": 11,
         "textOffset":8,
         "list": [
@@ -19,6 +19,10 @@
                 "iconPath": "widget://image/main/main.png",
                 "selectedIconPath": "widget://image/main/main.png"
             }, {
+                "text": "视频中心",
+                "iconPath": "widget://image/main/main.png",
+                "selectedIconPath": "widget://image/main/main.png"
+            },{
                 "text": "异喵趣闻",
                 "iconPath": "widget://image/main/main.png",
                 "selectedIconPath": "widget://image/main/main.png"
@@ -41,7 +45,12 @@
             }, {
                 "title": "喵",
                 "name": "tab_frm_work",
-                "url": "widget://html/recommend.html",
+                "url": "widget://html/video.html",
+                "historyGestureEnabled":false
+            },{
+                "title": "喵",
+                "name": "tab_frm_work",
+                "url": "widget://html/strange.html",
                 "historyGestureEnabled":false
             }, {
                 "title": "喵",
